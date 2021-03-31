@@ -17,7 +17,7 @@ function App() {
     let newSwatches = []
 
     for (let i = 0; i < count; i++) {
-      const hue = h + i * 360 / count
+      const hue = (h + i * 360 / count) % 360
       const color = 'hsl(' + hue + ',' + s + '%,' + l + '%)'
       newSwatches.push(<Swatch key={i} color={color} />);
     }
@@ -31,29 +31,27 @@ function App() {
     if (!change) return
 
     const value = parseInt(e.target.value)
-    const maxValue = parseInt(e.target.max) + 1
-    const name = e.target.attributes.getNamedItem('name')
-    const loopvalue = e.target.loopvalue
-    const input = document.querySelector('[name=' + name.value + ']')
-    const changeEvt = new Event('input', { bubbles: true })
+    const max = parseInt(e.target.max) + 1
+    const min = parseInt(e.target.min) + 1
+    const inputEvent = new Event('input', { bubbles: true });
 
-    let newValue = (value + change + maxValue) % maxValue
-    newValue = loopvalue ? Math.min(newValue, maxValue) : newValue
+    let newValue = (value + change + max) % max
+    newValue = min ? Math.max(newValue, min) : newValue
 
     e.preventDefault()
 
-    e.target.value = newValue;
+    var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+    nativeInputValueSetter.call(e.target, newValue);
 
-    input.dispatchEvent(changeEvt)
+    e.target.dispatchEvent(inputEvent);
   }
 
   function getChange(e) {
-    if (e.key === "ArrowUp") {
+    if (e.key === "ArrowUp")
       return 1
 
-    } else if (e.key === "ArrowDown") {
+    else if (e.key === "ArrowDown")
       return -1
-    }
   }
 
   return (
@@ -63,8 +61,7 @@ function App() {
         name="hue"
         value={h}
         max="360"
-        loopvalue="true"
-        onChange={(e) => { setH(e.target.value) }}
+        onChange={(e) => { setH(parseInt(e.target.value)) }}
         onKeyDown={keydownHandler}
         autoFocus
       />
@@ -73,7 +70,8 @@ function App() {
         name="saturation"
         value={s}
         max="100"
-        onChange={(e) => { setS(e.target.value) }}
+        min="0"
+        onChange={(e) => { setS(parseInt(e.target.value)) }}
         onKeyDown={keydownHandler}
       />
       <input
@@ -81,7 +79,8 @@ function App() {
         name="lightness"
         value={l}
         max="100"
-        onChange={(e) => { setL(e.target.value) }}
+        min="0"
+        onChange={(e) => { setL(parseInt(e.target.value)) }}
         onKeyDown={keydownHandler}
       />
       <input
