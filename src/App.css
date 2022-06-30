@@ -1,3 +1,19 @@
+body {
+  padding: 44px;
+}
+
+.swatches {
+  margin-top: 20px;
+  width: calc(44px * 6)
+}
+
 .swatch {
-  height: 30px;
+  height: 33px;
+  width: 33px;
+  margin-top: 11px;
+  margin-right: 11px;
+  display: inline-block;
+  overflow: hidden;
+  border-radius: 100%;
+  color: transparent;
 }

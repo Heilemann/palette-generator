@@ -10,10 +10,6 @@ function App() {
   const [swatches, setSwatches] = useState([])
 
   useEffect(() => {
-
-  }, [])
-
-  useEffect(() => {
     let newSwatches = []
 
     for (let i = 0; i < count; i++) {
@@ -30,14 +26,14 @@ function App() {
 
     if (!change) return
 
-    const value = parseInt(e.target.value)
-    const max = parseInt(e.target.max) + 1
-    const min = parseInt(e.target.min) + 1
+    const value = parseFloat(e.target.value)
+    const max = parseFloat(e.target.max) + 1
+    const min = parseFloat(e.target.min) - 1
     const inputEvent = new Event('input', { bubbles: true });
 
     let newValue = (value + change + max) % max
     newValue = min ? Math.max(newValue, min) : newValue
-
+    newValue = newValue.toFixed(2)
     e.preventDefault()
 
     var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
@@ -56,41 +52,54 @@ function App() {
 
   return (
     <div className="App">
+      <label for="hue">Hue</label>
       <input
         type="text"
         name="hue"
         value={h}
         max="360"
-        onChange={(e) => { setH(parseInt(e.target.value)) }}
+        onChange={(e) => { setH(parseFloat(e.target.value)) }}
         onKeyDown={keydownHandler}
         autoFocus
       />
+
+      <label for="saturation">Sat</label>
       <input
         type="text"
         name="saturation"
         value={s}
         max="100"
         min="0"
-        onChange={(e) => { setS(parseInt(e.target.value)) }}
+        onChange={(e) => { setS(parseFloat(e.target.value)) }}
         onKeyDown={keydownHandler}
       />
+
+      <label for="lightness">Lightness</label>
       <input
         type="text"
         name="lightness"
         value={l}
         max="100"
         min="0"
-        onChange={(e) => { setL(parseInt(e.target.value)) }}
+        onChange={(e) => { setL(parseFloat(e.target.value)) }}
         onKeyDown={keydownHandler}
       />
+
+      <label for="hue">Swatches</label>
       <input
         type="text"
-        name="count"
+        name="swatches"
         value={count}
+        max="1000"
+        min="2"
+        increment="0.1"
         onChange={(e) => { setCount(e.target.value) }}
         onKeyDown={keydownHandler}
       />
-      {swatches}
+
+      <div className="swatches">
+        {swatches}
+      </div>
     </div>
   );
 }
